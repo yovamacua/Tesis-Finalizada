@@ -1,0 +1,6 @@
+- sacar el script de la bd
+- explicar para que son todos esos otros archivos txt que hay en esta carpeta, si es que sirven sino borrar.
+- epxplicar los pasos luego de importar el script de la bd, por lo de los trigers que se necesitan despues.
+- borrar este archivo txt al terminar.
+
+PROBAR LOS PASOS DE IMPORTACION DE LOS ARCHIVOS DE LOS TRIGERS PARA NO ESCRIBIR TONTERAS

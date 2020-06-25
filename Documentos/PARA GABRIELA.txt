@@ -1,0 +1,15 @@
+Poner el documento final de la tesis ya aprobado por la biblioteca en esta carpeta
+
+mi idea opcional:
+agregar tambien el documento separado del manual de usuario y de instalacion.
+es decir:
+
+archivo 1 - documento de tesis que incluye manuales
+archivo 2 - documento manual de usuario
+archivo 3 - documento manual de instalacion
+
+se escucha un poco redundante meter los mismo 2 veces pero hay existen personas muy especiales
+que nunca se le vas ocurrir buscar los manuales en el documento de la tesis, entonces seria bueno
+ponerlo tambien separado, repito esta es idea mia y opcional.
+
+borrar este archivo txt al terminar.

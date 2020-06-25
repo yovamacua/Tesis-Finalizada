@@ -1,0 +1,14 @@
+Sistema - Local:
+- Instalar la base de datos
+- Ir a config -> conexión.php 
+	- Editar parametros de conexion
+	- Si la carpeta del sistema a sido renombrada cambiar en el mismo archivo linea 56. Sino se renombra saltar este paso
+- Para usar sistema ingresar a carpeta "vistas"
+
+Sistema - Online:
+- Instalar la base de datos
+- Ir a config -> conexión.php 
+	- Editar parametros de conexion
+	- Renombrar direccion web en la linea 56.
+- No borrar archivo .htaccess
+

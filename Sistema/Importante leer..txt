@@ -1,0 +1,12 @@
+Se adjuntan 2 versiones del mismo sistema a continuación la explicacion.
+
+Sistema - Local:
+Contiene una version del sistema para funcionar en entornos locales, no en hosting web, esta es la version de DESARROLLO.
+
+
+Sistema - Online:
+Version en PRODUCCION del sistema y adaptada a hosting web, esta version incluye pequeños cambios en direcciones url para
+funcionar de manera adecuada. NO FUNCIONA DE MANERA LOCAL.
+
+cualquier cambio realizado en el sistema debe ser probado y testeado en la version de DESARROLLO para
+luego replicar el cambio en la version en PRODUCCION.
