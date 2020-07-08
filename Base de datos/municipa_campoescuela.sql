@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:3306
--- Tiempo de generación: 01-07-2020 a las 21:04:53
+-- Tiempo de generación: 08-07-2020 a las 11:27:29
 -- Versión del servidor: 5.7.29-cll-lve
 -- Versión de PHP: 7.3.6
 
@@ -20,15 +20,13 @@ SET time_zone = "+00:00";
 
 --
 -- Base de datos: `municipa_campoescuela`
-create database municipa_campoescuela;
-use municipa_campoescuela;
 --
 
 DELIMITER $$
 --
 -- Procedimientos
 --
-CREATE PROCEDURE `editar_insumo` (IN `idinsumos` INT, IN `cantida` INT, IN `fecha` DATE)  begin
+CREATE DEFINER=`municipalidaddes`@`localhost` PROCEDURE `editar_insumo` (IN `idinsumos` INT, IN `cantida` INT, IN `fecha` DATE)  begin
 set @ent= 0;
   INSERT INTO kardexinsumo(
  entrada,
@@ -46,7 +44,7 @@ set @ent= 0;
  where id_insumo = idinsumos;
  END$$
 
-CREATE  PROCEDURE `editar_producto` (IN `producto` VARCHAR(25), IN `precio` DOUBLE, IN `unidad` INT, IN `idusuario` INT, IN `idcategorias` INT, IN `idproducto` INT, IN `cantida` DOUBLE, IN `cantida1` DOUBLE)  begin
+CREATE DEFINER=`municipalidaddes`@`localhost` PROCEDURE `editar_producto` (IN `producto` VARCHAR(25), IN `precio` DOUBLE, IN `unidad` INT, IN `idusuario` INT, IN `idcategorias` INT, IN `idproducto` INT, IN `cantida` DOUBLE, IN `cantida1` DOUBLE)  begin
 Declare exit handler for sqlexception
  BEGIN
   SELECT "ERROR"
@@ -75,7 +73,7 @@ update producto set
  commit;
 END$$
 
-CREATE  PROCEDURE `editar_valoresinsumo` (IN `idinsumos` INT, IN `cant` INT, IN `prec` DOUBLE, IN `descr` VARCHAR(100), IN `fec` DATE, IN `idcate` INT(11), IN `idunid` INT(11), IN `sumar` INT)  begin
+CREATE DEFINER=`municipalidaddes`@`localhost` PROCEDURE `editar_valoresinsumo` (IN `idinsumos` INT, IN `cant` INT, IN `prec` DOUBLE, IN `descr` VARCHAR(100), IN `fec` DATE, IN `idcate` INT(11), IN `idunid` INT(11), IN `sumar` INT)  begin
 update kardexinsumo set
    entrada = cant + sumar
    where idinsumo = idinsumos;
@@ -89,19 +87,19 @@ update insumos set
      where id_insumo = idinsumos;
 END$$
 
-CREATE  PROCEDURE `getproductos` ()  BEGIN
+CREATE DEFINER=`municipalidaddes`@`localhost` PROCEDURE `getproductos` ()  BEGIN
    select p.id_producto, p.producto,p.precio_venta,u.nombre as unidad,c.categoria,k.stock from producto p
   inner join kardex k on p.id_producto=k.id_producto1
   inner join categorias c on c.id_categoria=p.idcategorias
   inner join unidad u on u.idunidad=p.id_unidad;
 END$$
 
-CREATE  PROCEDURE `getventas` ()  BEGIN
+CREATE DEFINER=`municipalidaddes`@`localhost` PROCEDURE `getventas` ()  BEGIN
 select v.idventas,v.fechaventa, concat(u.nombres,' ', u.apellidos) as usuario , v.numero_venta, v.total_pagar ,v.estado from ventas v
 inner join usuarios u on v.id_usuario= u.id_usuario order by v.fechaventa DESC;
 END$$
 
-CREATE PROCEDURE `get_producto_por_id` (IN `idproducto` INT)  BEGIN
+CREATE DEFINER=`municipalidaddes`@`localhost` PROCEDURE `get_producto_por_id` (IN `idproducto` INT)  BEGIN
   select p.id_producto, p.producto,p.precio_venta,u.nombre as unidad,c.categoria,c.id_categoria,k.stock, u.idunidad from producto p
   inner join kardex k on p.id_producto=k.id_producto1
   inner join categorias c on c.id_categoria=p.idcategorias
@@ -109,7 +107,7 @@ CREATE PROCEDURE `get_producto_por_id` (IN `idproducto` INT)  BEGIN
    where p.id_producto=idproducto;
 END$$
 
-CREATE  PROCEDURE `registar_producto` (IN `nombreprodu` VARCHAR(50), IN `precio` DOUBLE, IN `medida` INT, IN `idcategoria` INT, IN `ingreso` DOUBLE, IN `id_usuario` INT)  BEGIN
+CREATE DEFINER=`municipalidaddes`@`localhost` PROCEDURE `registar_producto` (IN `nombreprodu` VARCHAR(50), IN `precio` DOUBLE, IN `medida` INT, IN `idcategoria` INT, IN `ingreso` DOUBLE, IN `id_usuario` INT)  BEGIN
     INSERT INTO producto(
         producto,
         precio_venta,
@@ -154,7 +152,7 @@ VALUES(
 END IF;
 END$$
 
-CREATE  PROCEDURE `registrar_detalleventas` (IN `idproducto` INT(11), IN `cantidad` DOUBLE, IN `precio_venta` DOUBLE, IN `idventas` INT(11))  begin
+CREATE DEFINER=`municipalidaddes`@`localhost` PROCEDURE `registrar_detalleventas` (IN `idproducto` INT(11), IN `cantidad` DOUBLE, IN `precio_venta` DOUBLE, IN `idventas` INT(11))  begin
   INSERT INTO detalleventas(
   id_producto,
   cantidad,
@@ -166,7 +164,7 @@ CREATE  PROCEDURE `registrar_detalleventas` (IN `idproducto` INT(11), IN `cantid
   idventas);
     END$$
 
-CREATE  PROCEDURE `registrar_insumo` (IN `cantida` INT, IN `precios` DOUBLE, IN `descrip` VARCHAR(100), IN `fecha` DATE, IN `idcategoria` INT, IN `iduni` INT)  BEGIN
+CREATE DEFINER=`municipalidaddes`@`localhost` PROCEDURE `registrar_insumo` (IN `cantida` INT, IN `precios` DOUBLE, IN `descrip` VARCHAR(100), IN `fecha` DATE, IN `idcategoria` INT, IN `iduni` INT)  BEGIN
  INSERT INTO insumos(
  cantidad,
  precio,
@@ -196,7 +194,7 @@ CREATE  PROCEDURE `registrar_insumo` (IN `cantida` INT, IN `precios` DOUBLE, IN 
  );
 END$$
 
-CREATE  PROCEDURE `registrar_venta` (IN `fecha` DATE, IN `total_pagar` DOUBLE, IN `estado` ENUM('1','0'), IN `numero_venta` VARCHAR(10), IN `id_usuario` INT(11))  begin
+CREATE DEFINER=`municipalidaddes`@`localhost` PROCEDURE `registrar_venta` (IN `fecha` DATE, IN `total_pagar` DOUBLE, IN `estado` ENUM('1','0'), IN `numero_venta` VARCHAR(10), IN `id_usuario` INT(11))  begin
   INSERT INTO ventas(
   fechaventa,
   total_pagar,
@@ -230,6 +228,14 @@ CREATE TABLE `capacitaciones` (
   `id_usuario` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Volcado de datos para la tabla `capacitaciones`
+--
+
+INSERT INTO `capacitaciones` (`id_capacitacion`, `fecha`, `nombreGrupo`, `cargo`, `encargado`, `id_usuario`) VALUES
+(1, '2020-02-20', 'Los agricultores', 'Lider de grupo', 'Fernando Rosas', 1),
+(6, '2020-03-04', 'Los montes', 'Encargado', 'Roberto Cruz', 1);
+
 -- --------------------------------------------------------
 
 --
@@ -242,6 +248,15 @@ CREATE TABLE `categorias` (
   `descripcion` varchar(75) NOT NULL,
   `id_usuarioscate` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Volcado de datos para la tabla `categorias`
+--
+
+INSERT INTO `categorias` (`id_categoria`, `categoria`, `descripcion`, `id_usuarioscate`) VALUES
+(1, 'hortalizas', 'verduras ', 1),
+(2, 'Avicola', 'Categoría de los productos aves', 1),
+(6, 'bobinos', 'carne de cerdo', 1);
 
 -- --------------------------------------------------------
 
@@ -257,6 +272,14 @@ CREATE TABLE `cuentas` (
   `estrategia` varchar(150) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Volcado de datos para la tabla `cuentas`
+--
+
+INSERT INTO `cuentas` (`id_cuenta`, `id_partida`, `nombrecuenta`, `objetivo`, `estrategia`) VALUES
+(1, 1, 'Comprar de pollos', 'Comprar pollos', 'Criar pollos por trimestre'),
+(2, 2, 'fgfg uuu', 'hgghhg', 'ffghfd');
+
 -- --------------------------------------------------------
 
 --
@@ -270,6 +293,13 @@ CREATE TABLE `detallecapacitados` (
   `dui` varchar(45) DEFAULT NULL,
   `id_capacitacion` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Volcado de datos para la tabla `detallecapacitados`
+--
+
+INSERT INTO `detallecapacitados` (`id_detallecapacitados`, `nombres`, `apellidos`, `dui`, `id_capacitacion`) VALUES
+(9, 'gaby', 'rivera', '12345678-0', 1);
 
 -- --------------------------------------------------------
 
@@ -286,6 +316,13 @@ CREATE TABLE `detallepedidos` (
   `id_uni` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Volcado de datos para la tabla `detallepedidos`
+--
+
+INSERT INTO `detallepedidos` (`id_detallepedido`, `nombreInsumo`, `cantidad`, `descripcion`, `id_pedido`, `id_uni`) VALUES
+(12, 'sacos de abono ', 2, 'abono ', 6, 3);
+
 -- --------------------------------------------------------
 
 --
@@ -299,6 +336,38 @@ CREATE TABLE `detalleventas` (
   `precio_venta` decimal(6,2) NOT NULL,
   `id_ventas` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+--
+-- Volcado de datos para la tabla `detalleventas`
+--
+
+INSERT INTO `detalleventas` (`id_detalle`, `id_producto`, `cantidad`, `precio_venta`, `id_ventas`) VALUES
+(1, 4, 3.00, 1.25, 1),
+(2, 4, 3.00, 1.25, 2),
+(3, 5, 4.00, 0.10, 2),
+(4, 5, 6.00, 0.10, 3),
+(5, 4, 2.00, 1.25, 3),
+(6, 6, 10.00, 0.15, 4),
+(7, 4, 2.00, 1.25, 4),
+(8, 5, 1.00, 0.10, 5),
+(9, 4, 4.00, 1.25, 6),
+(10, 7, 1.00, 0.25, 6),
+(11, 4, 4.00, 1.25, 7),
+(12, 5, 3.00, 0.10, 7),
+(13, 4, 2.00, 1.25, 8),
+(14, 7, 2.00, 0.25, 8),
+(15, 4, 3.00, 1.25, 9),
+(16, 5, 3.00, 0.10, 9),
+(17, 5, 1.00, 0.10, 10),
+(18, 7, 1.00, 0.25, 10),
+(19, 4, 4.00, 1.25, 11),
+(20, 8, 4.00, 1.25, 11),
+(21, 4, 3.25, 1.25, 12),
+(22, 5, 4.00, 0.10, 12),
+(23, 8, 3.15, 1.25, 12),
+(24, 4, 3.25, 1.25, 13),
+(25, 5, 4.00, 0.10, 13),
+(26, 8, 3.15, 1.25, 13);
 
 --
 -- Disparadores `detalleventas`
@@ -335,6 +404,14 @@ CREATE TABLE `donaciones` (
   `id_usuario` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Volcado de datos para la tabla `donaciones`
+--
+
+INSERT INTO `donaciones` (`id_donacion`, `fecha`, `donante`, `descripcion`, `cantidad`, `precio`, `id_usuario`) VALUES
+(1, '2020-03-02', 'Gabriela Rivera', 'Bolsas de semilla ', 15, 2.53, 1),
+(5, '2020-03-09', 'USO', 'abono quintales', 6, 386.00, 1);
+
 -- --------------------------------------------------------
 
 --
@@ -357,6 +434,14 @@ CREATE TABLE `entrada` (
   `Orden` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Volcado de datos para la tabla `entrada`
+--
+
+INSERT INTO `entrada` (`id_entrada`, `id_cuenta`, `ActGeneral`, `ActEspecifica`, `Responsable`, `Academico`, `Tecnico`, `Financiero`, `Infraestructura`, `Logro`, `Inicio`, `Fin`, `Orden`) VALUES
+(1, 1, 'Comprae', 'pollos', 'Claudia', 'Uso', 'No hay', 100.00, 'Campo escuela', 'Febrero', 'Marzo', 'Ver ganancias', 0),
+(2, 2, 'general', 'especifica', 'responsable', 'academico', 'tecnico', 100.00, 'infra', 'enero', 'marzo', 'logro', 2);
+
 -- --------------------------------------------------------
 
 --
@@ -371,6 +456,14 @@ CREATE TABLE `gastos` (
   `id_usuario` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Volcado de datos para la tabla `gastos`
+--
+
+INSERT INTO `gastos` (`id_gasto`, `fecha`, `descripcion`, `precio`, `id_usuario`) VALUES
+(1, '2020-02-20', 'Gasolina ', 20.76, 1),
+(3, '2020-02-29', 'Gastos varios', 2.50, 1);
+
 -- --------------------------------------------------------
 
 --
@@ -384,6 +477,13 @@ CREATE TABLE `incidentes` (
   `fecha` date NOT NULL,
   `id_usuario` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Volcado de datos para la tabla `incidentes`
+--
+
+INSERT INTO `incidentes` (`id_incidente`, `titulo`, `descripcion`, `fecha`, `id_usuario`) VALUES
+(1, 'Robo de gallinas', 'Robo de 5 gallinas', '2020-02-20', 1);
 
 -- --------------------------------------------------------
 
@@ -401,6 +501,14 @@ CREATE TABLE `insumos` (
   `iduni` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Volcado de datos para la tabla `insumos`
+--
+
+INSERT INTO `insumos` (`id_insumo`, `cantidad`, `precio`, `descripcion`, `fecha`, `idcategoria`, `iduni`) VALUES
+(3, 35, 1.00, 'insumos varios', '2020-03-12', 1, 2),
+(7, 2, 3.00, 'bolsas de semilla', '2020-03-20', 1, 3);
+
 -- --------------------------------------------------------
 
 --
@@ -415,6 +523,17 @@ CREATE TABLE `kardex` (
   `id_producto1` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Volcado de datos para la tabla `kardex`
+--
+
+INSERT INTO `kardex` (`idkardex`, `entrada`, `salida`, `stock`, `id_producto1`) VALUES
+(1, 164.00, 45.50, 77.05, 4),
+(2, 112.00, 43.00, 76.00, 5),
+(3, 170.00, 10.00, 100.00, 6),
+(4, 200.00, 104.00, 7.00, 7),
+(5, 85.35, 10.30, 75.05, 8);
+
 -- --------------------------------------------------------
 
 --
@@ -428,6 +547,19 @@ CREATE TABLE `kardexinsumo` (
   `fechaS` date NOT NULL,
   `idinsumo` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Volcado de datos para la tabla `kardexinsumo`
+--
+
+INSERT INTO `kardexinsumo` (`id_kardexinsumo`, `entrada`, `salida`, `fechaS`, `idinsumo`) VALUES
+(3, 45, 10, '2020-03-12', 3),
+(7, 7, 0, '2020-03-15', 7),
+(8, 7, 2, '2020-03-16', 7),
+(9, 7, 3, '2020-03-18', 7),
+(10, 0, 4, '2020-03-28', 7),
+(11, 0, 1, '2020-03-16', 7),
+(12, 0, 5, '2020-03-16', 3);
 
 -- --------------------------------------------------------
 
@@ -477,6 +609,14 @@ CREATE TABLE `partidas` (
   `estado` enum('0','1') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Volcado de datos para la tabla `partidas`
+--
+
+INSERT INTO `partidas` (`id_partida`, `nombrepartida`, `responsable`, `id_usuario`, `anio`, `estado`) VALUES
+(1, 'Campo escuela', 'Ing. Pacas', 1, 2020, '0'),
+(2, 'prueba 2', 'prueba', 1, 2019, '0');
+
 -- --------------------------------------------------------
 
 --
@@ -488,6 +628,13 @@ CREATE TABLE `pedidos` (
   `id_usuario` int(11) NOT NULL,
   `fecha` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Volcado de datos para la tabla `pedidos`
+--
+
+INSERT INTO `pedidos` (`id_pedido`, `id_usuario`, `fecha`) VALUES
+(6, 1, '2020-03-02');
 
 -- --------------------------------------------------------
 
@@ -505,6 +652,15 @@ CREATE TABLE `perdidas` (
   `unidadDelProduc` varchar(45) DEFAULT NULL,
   `id_usuario` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Volcado de datos para la tabla `perdidas`
+--
+
+INSERT INTO `perdidas` (`id_perdida`, `idproducto`, `cantidad`, `descripcion`, `precioProduc`, `fecha`, `unidadDelProduc`, `id_usuario`) VALUES
+(1, 6, 7, 'choros', 0.15, '2020-02-29', '3', 1),
+(7, 4, 2, 'arruinadas', 1.25, '2020-03-09', '1', 1),
+(8, 7, 100, 'marchitaron', 0.25, '2020-04-01', '3', 1);
 
 --
 -- Disparadores `perdidas`
@@ -551,7 +707,8 @@ CREATE TABLE `perfil` (
 --
 
 INSERT INTO `perfil` (`idperfil`, `nombre`, `codperfil`, `estados`) VALUES
-(1, 'Administrador', 'dmP4Ei', '1');
+(1, 'Administrador', 'dmP4Ei', '1'),
+(2, 'YHLQMDLG', '.kRQ7q', '1');
 
 -- --------------------------------------------------------
 
@@ -585,8 +742,10 @@ INSERT INTO `perfil_modulo` (`idperfil_modulo`, `id_modulo`, `idperfiles`) VALUE
 (13, 13, 1),
 (14, 14, 1),
 (15, 15, 1),
-(16, 16, 1);
-
+(16, 16, 1),
+(23, 1, 2),
+(24, 5, 2),
+(25, 10, 2);
 
 -- --------------------------------------------------------
 
@@ -602,6 +761,17 @@ CREATE TABLE `producto` (
   `id_usuario` int(11) NOT NULL,
   `idcategorias` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Volcado de datos para la tabla `producto`
+--
+
+INSERT INTO `producto` (`id_producto`, `producto`, `precio_venta`, `id_unidad`, `id_usuario`, `idcategorias`) VALUES
+(4, 'pollo', 1.25, 1, 1, 2),
+(5, 'tomate', 0.10, 2, 1, 1),
+(6, 'huevos', 0.15, 3, 1, 2),
+(7, 'cilantro', 0.25, 3, 1, 1),
+(8, 'gallina roja', 1.25, 1, 1, 2);
 
 -- --------------------------------------------------------
 
@@ -630,41 +800,41 @@ INSERT INTO `rol` (`idrol`, `rol`, `codigo`, `descripcion`, `idmodulos`) VALUES
 (6, 'EDITAR', 'EDUSUA', 'DSDSD', 1),
 (7, 'ELIMINAR', 'ELUSUA', 'FDFDFDF', 1),
 (8, 'REGISTRAR', 'REINCI', 'DFDFDF', 2),
-(9, 'ELIMINAR', 'ELINCI', 'SFDFDF', 2),
-(10, 'REGISTRAR', 'REPART', 'DDSDSD', 3),
-(11, 'EDITAR', 'EDPART', 'GHGHGHGH', 3),
-(12, 'ELIMINAR', 'ELPART', 'HGHGHGH', 3),
-(13, 'REGISTRAR', 'REPERD', 'HGHGHGH', 4),
-(14, 'EDITAR', 'EDPERD', 'GHGHGH', 4),
-(15, 'ELIMINAR', 'ELPERD', 'DSDSD', 4),
-(16, 'REGISTRAR', 'REDONA', 'DSDSDSD', 5),
-(17, 'EDITAR', 'EDDONA', 'DSDSDSD', 5),
-(18, 'ELIMINAR', 'ELDONA', 'FDFDF', 5),
-(19, 'REGISTRAR', 'REGAST', 'DSDSDSD', 6),
-(20, 'EDITAR', 'EDGAST', 'DSDSDSD', 6),
-(21, 'ELIMINAR', 'ELGAST', 'DSDSDSD', 6),
-(22, 'REGISTRAR', 'RECAPA', 'SDSDSDSDSD', 7),
-(23, 'EDITAR', 'EDCAPA', 'FDFDF', 7),
-(24, 'ELIMINAR', 'ELCAPA', 'DSDSDS', 7),
-(25, 'EDITAR', 'EDPROD', 'FDFDF', 9),
-(26, 'ELIMINAR', 'ELPROD', 'DFDFDF', 9),
-(27, 'REGISTRAR', 'REPEDI', 'REGISTAR PERDIDA', 10),
-(28, 'EDITAR', 'EDPEDI', 'PEDIDOS', 10),
-(29, 'ELIMINAR', 'ELPEDI', 'ELIMINAR PEDIDO', 10),
-(30, 'REGISTRAR', 'REVENT', 'registra venta', 11),
-(31, 'EDITAR', 'EDVENT', 'permite editar venta', 11),
-(32, 'ELIMINAR', 'ELVENT', 'anula una venta', 11),
-(33, 'REGISTRAR', 'REUNID', 'registrar unidad', 15),
-(34, 'EDITAR', 'EDUNID', 'edita la unidad', 15),
-(35, 'ELIMINAR', 'ELUNID', 'elimina unidad', 15),
-(36, 'REGISTRAR', 'REPERM', 'agrega permiso', 16),
-(37, 'EDITAR', 'EDPERM', 'edita los permiso', 16),
-(38, 'ELIMINAR', 'ELPERM', 'eliminar permiso', 16),
-(39, 'CONSULTAR', 'COGAST', 'consulta de gasto', 6),
-(40, 'CONSULTAR', 'CODONA', 'comsulta de donaciones', 5),
-(41, 'CONSULTAR', 'COINFO', 'consulta de informes', 12),
-(42, 'CONSULTAR', 'COREPO', 'consulta de ventas', 13),
-(43, 'EDITAR', 'EDINCI', 'edita la informacion ', 2);
+(10, 'ELIMINAR', 'ELINCI', 'SFDFDF', 2),
+(11, 'REGISTRAR', 'REPART', 'DDSDSD', 3),
+(12, 'EDITAR', 'EDPART', 'GHGHGHGH', 3),
+(13, 'ELIMINAR', 'ELPART', 'HGHGHGH', 3),
+(14, 'REGISTRAR', 'REPERD', 'HGHGHGH', 4),
+(15, 'EDITAR', 'EDPERD', 'GHGHGH', 4),
+(16, 'ELIMINAR', 'ELPERD', 'DSDSD', 4),
+(17, 'REGISTRAR', 'REDONA', 'DSDSDSD', 5),
+(18, 'EDITAR', 'EDDONA', 'DSDSDSD', 5),
+(19, 'ELIMINAR', 'ELDONA', 'FDFDF', 5),
+(20, 'REGISTRAR', 'REGAST', 'DSDSDSD', 6),
+(21, 'EDITAR', 'EDGAST', 'DSDSDSD', 6),
+(22, 'ELIMINAR', 'ELGAST', 'DSDSDSD', 6),
+(23, 'REGISTRAR', 'RECAPA', 'SDSDSDSDSD', 7),
+(24, 'EDITAR', 'EDCAPA', 'FDFDF', 7),
+(25, 'ELIMINAR', 'ELCAPA', 'DSDSDS', 7),
+(26, 'EDITAR', 'EDPROD', 'FDFDF', 9),
+(27, 'ELIMINAR', 'ELPROD', 'DFDFDF', 9),
+(28, 'REGISTRAR', 'REPEDI', 'REGISTAR PERDIDA', 10),
+(29, 'EDITAR', 'EDPEDI', 'PEDIDOS', 10),
+(30, 'ELIMINAR', 'ELPEDI', 'ELIMINAR PEDIDO', 10),
+(31, 'REGISTRAR', 'REVENT', 'registra venta', 11),
+(32, 'EDITAR', 'EDVENT', 'permite editar venta', 11),
+(33, 'ELIMINAR', 'ELVENT', 'anula una venta', 11),
+(34, 'REGISTRAR', 'REUNID', 'registrar unidad', 15),
+(35, 'EDITAR', 'EDUNID', 'edita la unidad', 15),
+(36, 'ELIMINAR', 'ELUNID', 'elimina unidad', 15),
+(37, 'REGISTRAR', 'REPERM', 'agrega permiso', 16),
+(38, 'EDITAR', 'EDPERM', 'edita los permiso', 16),
+(39, 'ELIMINAR', 'ELPERM', 'eliminar permiso', 16),
+(40, 'CONSULTAR', 'COGAST', 'consulta de gasto', 6),
+(41, 'CONSULTAR', 'CODONA', 'comsulta de donaciones', 5),
+(42, 'CONSULTAR', 'COINFO', 'consulta de informes', 12),
+(43, 'CONSULTAR', 'COREPO', 'consulta de ventas', 13),
+(44, 'EDITAR', 'EDINCI', 'edita la informacion ', 2);
 
 -- --------------------------------------------------------
 
@@ -679,6 +849,55 @@ CREATE TABLE `roles_usuario` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
+-- Volcado de datos para la tabla `roles_usuario`
+--
+
+INSERT INTO `roles_usuario` (`idroles_usuario`, `idroles`, `id_usuarios`) VALUES
+(256, 5, 1),
+(257, 6, 1),
+(258, 7, 1),
+(259, 8, 1),
+(260, 10, 1),
+(261, 44, 1),
+(262, 11, 1),
+(263, 12, 1),
+(264, 13, 1),
+(265, 14, 1),
+(266, 15, 1),
+(267, 16, 1),
+(268, 17, 1),
+(269, 18, 1),
+(270, 19, 1),
+(271, 41, 1),
+(272, 20, 1),
+(273, 21, 1),
+(274, 22, 1),
+(275, 40, 1),
+(276, 23, 1),
+(277, 24, 1),
+(278, 25, 1),
+(279, 1, 1),
+(280, 2, 1),
+(281, 3, 1),
+(282, 4, 1),
+(283, 26, 1),
+(284, 27, 1),
+(285, 28, 1),
+(286, 29, 1),
+(287, 30, 1),
+(288, 31, 1),
+(289, 32, 1),
+(290, 33, 1),
+(291, 42, 1),
+(292, 43, 1),
+(293, 34, 1),
+(294, 35, 1),
+(295, 36, 1),
+(296, 37, 1),
+(297, 38, 1),
+(298, 39, 1);
+
+-- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `unidad`
@@ -690,6 +909,15 @@ CREATE TABLE `unidad` (
   `descripcion` varchar(50) NOT NULL,
   `idusuariouni` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Volcado de datos para la tabla `unidad`
+--
+
+INSERT INTO `unidad` (`idunidad`, `nombre`, `descripcion`, `idusuariouni`) VALUES
+(1, 'libra', 'cantidades por libras', 1),
+(2, 'Gramos', 'Medida para la unidad', 1),
+(3, 'unidad', 'cantidad individual', 1);
 
 -- --------------------------------------------------------
 
@@ -711,6 +939,13 @@ CREATE TABLE `usuarios` (
   `idperfiles` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Volcado de datos para la tabla `usuarios`
+--
+
+INSERT INTO `usuarios` (`id_usuario`, `nombres`, `apellidos`, `correo`, `usuario`, `password`, `password2`, `fecha_ingreso`, `estado`, `usuario_imagen`, `idperfiles`) VALUES
+(1, 'admin', 'uso', 'admin@admin.com', 'admin', '$2a$07$asxx54ahjppf45sd87a5auFL5K1.Cmt9ZheoVVuudOi5BCi10qWly', '$2a$07$asxx54ahjppf45sd87a5auFL5K1.Cmt9ZheoVVuudOi5BCi10qWly', '2019-10-28', '1', 'admin1.jpg', 1);
+
 -- --------------------------------------------------------
 
 --
@@ -725,6 +960,25 @@ CREATE TABLE `ventas` (
   `numero_venta` varchar(15) NOT NULL,
   `id_usuario` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Volcado de datos para la tabla `ventas`
+--
+
+INSERT INTO `ventas` (`idventas`, `fechaventa`, `total_pagar`, `estado`, `numero_venta`, `id_usuario`) VALUES
+(1, '2020-01-21', 3.75, '1', 'NV00001', 1),
+(2, '2020-02-29', 4.15, '0', 'NV00002', 1),
+(3, '2020-03-02', 3.11, '0', 'NV00003', 1),
+(4, '2020-03-03', 4.00, '0', 'NV00004', 1),
+(5, '2020-04-04', 0.10, '1', 'NV00005', 1),
+(6, '2020-03-09', 5.25, '1', 'NV00006', 1),
+(7, '2020-03-11', 5.31, '1', 'NV00007', 1),
+(8, '2020-03-11', 3.00, '1', 'NV00008', 1),
+(9, '2020-03-11', 4.06, '1', 'NV00009', 1),
+(10, '2020-03-11', 0.35, '0', 'NV00010', 1),
+(11, '2020-06-06', 9.76, '1', 'NV00011', 1),
+(12, '2020-06-06', 8.41, '1', 'NV00012', 1),
+(13, '2020-06-06', 8.41, '1', 'NV00012', 1);
 
 --
 -- Índices para tablas volcadas
@@ -919,79 +1173,79 @@ ALTER TABLE `ventas`
 -- AUTO_INCREMENT de la tabla `capacitaciones`
 --
 ALTER TABLE `capacitaciones`
-  MODIFY `id_capacitacion` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_capacitacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `categorias`
 --
 ALTER TABLE `categorias`
-  MODIFY `id_categoria` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_categoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `cuentas`
 --
 ALTER TABLE `cuentas`
-  MODIFY `id_cuenta` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_cuenta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `detallecapacitados`
 --
 ALTER TABLE `detallecapacitados`
-  MODIFY `id_detallecapacitados` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_detallecapacitados` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `detallepedidos`
 --
 ALTER TABLE `detallepedidos`
-  MODIFY `id_detallepedido` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_detallepedido` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de la tabla `detalleventas`
 --
 ALTER TABLE `detalleventas`
-  MODIFY `id_detalle` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_detalle` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT de la tabla `donaciones`
 --
 ALTER TABLE `donaciones`
-  MODIFY `id_donacion` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_donacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `entrada`
 --
 ALTER TABLE `entrada`
-  MODIFY `id_entrada` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_entrada` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `gastos`
 --
 ALTER TABLE `gastos`
-  MODIFY `id_gasto` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_gasto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `incidentes`
 --
 ALTER TABLE `incidentes`
-  MODIFY `id_incidente` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_incidente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `insumos`
 --
 ALTER TABLE `insumos`
-  MODIFY `id_insumo` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_insumo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `kardex`
 --
 ALTER TABLE `kardex`
-  MODIFY `idkardex` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idkardex` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `kardexinsumo`
 --
 ALTER TABLE `kardexinsumo`
-  MODIFY `id_kardexinsumo` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_kardexinsumo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de la tabla `modulo`
@@ -1003,19 +1257,19 @@ ALTER TABLE `modulo`
 -- AUTO_INCREMENT de la tabla `partidas`
 --
 ALTER TABLE `partidas`
-  MODIFY `id_partida` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_partida` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `pedidos`
 --
 ALTER TABLE `pedidos`
-  MODIFY `id_pedido` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_pedido` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `perdidas`
 --
 ALTER TABLE `perdidas`
-  MODIFY `id_perdida` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_perdida` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `perfil`
@@ -1033,7 +1287,7 @@ ALTER TABLE `perfil_modulo`
 -- AUTO_INCREMENT de la tabla `producto`
 --
 ALTER TABLE `producto`
-  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `rol`
@@ -1051,19 +1305,19 @@ ALTER TABLE `roles_usuario`
 -- AUTO_INCREMENT de la tabla `unidad`
 --
 ALTER TABLE `unidad`
-  MODIFY `idunidad` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idunidad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `ventas`
 --
 ALTER TABLE `ventas`
-  MODIFY `idventas` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idventas` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- Restricciones para tablas volcadas

@@ -1,13 +1,11 @@
 ******** Pasos para instalar la base de datos *********
-1-Usar el archivo municipa_campoescuela.sql que tiene el script de toda la
+
+1- Crear base de datos "campoescuela" o con cualquier otro nombre en phpmyadmin
+
+2 -Usar el archivo municipa_campoescuela.sql que tiene el script de toda la
 base de datos.
 
-2-Ejecutar el archivo municipa_campoescuela.sql  en mysql Workbeanch o en phpadmin
+- El usuario de acceso al sistema se crea automaticamente al importar el script anterior.
 
-3-Despues de la instalacion de la base de datos crear el usuario.
-
-4-Terminado de crear el usuario buscar la table roles_usuario e  insertar los datos.
-
-
-Nota:Las tablas modulo,perfil,perfil_modulo,rol sus datos viene en el archivo municipa_campoescuela.sql solo para
-que al momento de instalar la base datos se puedan insertar y utilizar para el paso 4.
+Usuario: admin
+Contraseña: 123456
